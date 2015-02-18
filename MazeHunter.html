@@ -65,7 +65,7 @@ function initializeData()
 
 function newGame()
 {
-	borderLeftTopHtml = '<div id="borderLeftTop"></div>';
+	/*borderLeftTopHtml = '<div id="borderLeftTop"></div>';
 	shadowLeftTopHtml = '<div id="shadowTop"></div>';
 	borderRightTopHtml = '<div id="borderRightTop"></div>';
 	shadowLeftBottomHtml = '<div id="shadowBottom"></div>';
@@ -76,13 +76,16 @@ function newGame()
 	shadowLeftMiddleHtml = '<div id="shadowMiddle"></div>';
 	borderRightMiddleHtml = '<div id="borderRightMiddle"></div>';
 	borderTopMiddleHtml = '<div id="borderTopMiddle"></div>';
+	borderBottomMiddleHtml = '<div id="borderBottomMiddle"></div>';
 
-	$('#court').html(borderLeftTopHtml+shadowLeftMiddleHtml+borderRightTopHtml+shadowLeftTopHtml+shadowLeftBottomHtml+characterPlayerHtml+borderLeftBottomHtml+borderRightBottomHtml+borderLeftMiddleHtml+borderRightMiddleHtml);
+	$('#court').html(borderLeftTopHtml+shadowLeftMiddleHtml+borderRightTopHtml+shadowLeftTopHtml+shadowLeftBottomHtml+characterPlayerHtml+borderLeftBottomHtml+borderRightBottomHtml+borderLeftMiddleHtml+borderTopMiddleHtml+borderRightMiddleHtml+borderBottomMiddleHtml);
 	//randomCharacter = (1 + Math.floor(Math.random() * 2));
 	avatar = 'url("Img/Characters/Character'+characterNumber+'/b-2.png")';
 	$('#playerCharacter').css('left', characterPos_x);
 	$('#playerCharacter').css('top', characterPos_y);
-	$('#playerCharacter').css('background-image', avatar);
+	$('#playerCharacter').css('background-image', avatar);*/
+	//characterNumber = (1 + Math.floor(Math.random() * 2));
+	loadMap(zoneNumber, 5);
 
 }
 
@@ -143,15 +146,6 @@ function loadMap(numberOfNextZone, sideCharacter)
 
 	if(vConfigNextZone[1] == 0)
 	{
-		borderBottomMiddleHtml = '<div id="borderTopMiddle"></div>';
-	}
-	else
-	{
-		borderBottomMiddleHtml = '';
-	}
-
-	if(vConfigNextZone[2] == 0)
-	{
 		borderLeftMiddleHtml = '<div id="borderLeftMiddle"></div>';
 		shadowLeftMiddleHtml = '<div id="shadowMiddle"></div>';
 	}
@@ -159,6 +153,16 @@ function loadMap(numberOfNextZone, sideCharacter)
 	{
 		borderLeftMiddleHtml = '';
 		shadowLeftMiddleHtml = '';
+	}
+
+	if(vConfigNextZone[2] == 0)
+	{
+		borderBottomMiddleHtml = '<div id="borderBottomMiddle"></div>';
+		
+	}
+	else
+	{
+		borderBottomMiddleHtml = '';
 	}
 	
 	if(vConfigNextZone[3] == 0)
@@ -170,42 +174,45 @@ function loadMap(numberOfNextZone, sideCharacter)
 		borderRightMiddleHtml = '';
 	}
 
-	$('#court').html(borderLeftTopHtml+shadowLeftMiddleHtml+borderRightTopHtml+shadowLeftTopHtml+shadowLeftBottomHtml+characterPlayerHtml+borderLeftBottomHtml+borderRightBottomHtml+borderLeftMiddleHtml+borderRightMiddleHtml+borderTopMiddle+borderBottomMiddleHtml);
+	$('#court').html(borderLeftTopHtml+shadowLeftMiddleHtml+borderRightTopHtml+shadowLeftTopHtml+shadowLeftBottomHtml+borderTopMiddleHtml+characterPlayerHtml+borderLeftBottomHtml+borderRightBottomHtml+borderLeftMiddleHtml+borderRightMiddleHtml+borderBottomMiddleHtml);
 	
 	var sideLetter;
 	switch(sideCharacter)
 	{
 		case 1:
 			sideLetter = 't';
-			characterPos_x = 0;
-			characterPos_y = 0;
+			characterPos_x = 250;
+			characterPos_y = 470;
 			break;
 		case 2:
 			sideLetter = 'b';
-			characterPos_x = 0;
-			characterPos_y = 0;
+			characterPos_x = 250;
+			characterPos_y = 15;
 			break;
 		case 3:
 			sideLetter = 'l';
-			characterPos_x = 0;
-			characterPos_y = 0;
+			characterPos_x = 490;
+			characterPos_y = 245;
 			break;
 		case 4:
 			sideLetter = 'r';
-			characterPos_x = 0;
-			characterPos_y = 0;
+			characterPos_x = 15;
+			characterPos_y = 245;
+			break;
+		case 5:
+			sideLetter = 'b';
 			break;
 	}
 	avatar = 'url("Img/Characters/Character'+characterNumber+'/'+sideLetter+'-2.png")';
 	$('#playerCharacter').css('left', characterPos_x);
 	$('#playerCharacter').css('top', characterPos_y);
 	$('#playerCharacter').css('background-image', avatar);
-	
+	zoneNumber = numberOfNextZone;
 }
 
 function changeMap(numberOfZone, side)
 {
-	if(numberOfZone == 15 || numberOfZone == 20 || numberOfZone == 25 || numberOfZone == 30)
+	if(numberOfZone == 11 || numberOfZone == 21 || numberOfZone == 15 || numberOfZone == 25)
 	{
 		//Ver que pasa en estas zonas, donde se da vuelta al mapa
 	}
@@ -241,9 +248,12 @@ function limitMapControl(side)
 		case 1:
 			if(vConfigZone[0] == 0)
 			{
-				if((characterPos_y - characterSpeed) < 150 )
+				if(characterPos_x > 225 && characterPos_x < 325)
 				{
-					return false;
+					if((characterPos_y - characterSpeed) < 100 )
+					{
+						return false;
+					}
 				}
 			}
 			else if(vConfigZone[0] == 1)
@@ -253,12 +263,91 @@ function limitMapControl(side)
 					changeMap(zoneNumber, side);
 				}
 			}
+			if((characterPos_x < 225 || characterPos_x >= 290))
+			{
+				if((characterPos_y - characterSpeed) < 190)
+				{
+					return false;
+				}
+			}
 			break;
 		case 2:
+			if(vConfigZone[2] == 0)
+			{
+				if(characterPos_x > 225 && characterPos_x < 325)
+				{
+					if((characterPos_y + characterSpeed) > 415 )
+					{
+						return false;
+					}
+				}
+			}
+			else if(vConfigZone[2] == 1)
+			{
+				if((characterPos_y + characterSpeed) > 495)
+				{
+					changeMap(zoneNumber, side);
+				}
+			}
+			if((characterPos_x < 225 || characterPos_x >= 290))
+			{
+				if((characterPos_y + characterSpeed) > 290)
+				{
+					return false;
+				}
+			}
 			break;
 		case 3:
+			if(vConfigZone[1] == 0)
+			{
+				if(characterPos_y > 190 && characterPos_y < 325)
+				{
+					if((characterPos_x - characterSpeed) < 120 )
+					{
+						return false;
+					}
+				}
+			}
+			else if(vConfigZone[1] == 1)
+			{
+				if((characterPos_x - characterSpeed) < 10)
+				{
+					changeMap(zoneNumber, side);
+				}
+			}
+			if((characterPos_y <= 180 || characterPos_y >= 295))
+			{
+				if((characterPos_x - characterSpeed) < 225)
+				{
+					return false;
+				}
+			}
 			break;
 		case 4:
+			if(vConfigZone[3] == 0)
+			{
+				if(characterPos_y > 190 && characterPos_y < 325)
+				{
+					if((characterPos_x + characterSpeed) > 400 )
+					{
+						return false;
+					}
+				}
+			}
+			else if(vConfigZone[3] == 1)
+			{
+				if((characterPos_x + characterSpeed) > 495)
+				{
+					changeMap(zoneNumber, side);
+				}
+			}
+			if((characterPos_y <= 180 || characterPos_y >= 295))
+			{
+				if((characterPos_x + characterSpeed) > 290)
+				{
+					return false;
+				}
+			}
 			break;
 	}
 	return true;
@@ -288,7 +377,10 @@ function moveCharacter()
 				varBottom = 0;
 			}
 			varBottom++;
-			characterPos_y += characterSpeed;
+			if(limitMapControl(keyPressed))
+			{
+				characterPos_y += characterSpeed;	
+			}
 			nextMove = 'b-'+varBottom;
 			//avatar = 'url("Img/Characters/Character'+characterNumber+'/'+nextMove+'.png")';
 			avatar = 'url("Img/Characters/Character'+characterNumber+'/b.gif")';
@@ -299,7 +391,10 @@ function moveCharacter()
 				varLeft = 0;
 			}
 			varLeft++;
-			characterPos_x -= characterSpeed;
+			if(limitMapControl(keyPressed))
+			{
+				characterPos_x -= characterSpeed;
+			}
 			nextMove = 'l-'+varLeft;
 			avatar = 'url("Img/Characters/Character'+characterNumber+'/'+nextMove+'.png")';
 			avatar = 'url("Img/Characters/Character'+characterNumber+'/l.gif")';
@@ -310,7 +405,10 @@ function moveCharacter()
 				varRight = 0;
 			}
 			varRight++;
-			characterPos_x += characterSpeed;
+			if(limitMapControl(keyPressed))
+			{
+				characterPos_x += characterSpeed;
+			}
 			nextMove = 'r-'+varRight;
 			avatar = 'url("Img/Characters/Character'+characterNumber+'/r.gif")';
 			break;
