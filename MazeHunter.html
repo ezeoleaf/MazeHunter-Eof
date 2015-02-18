@@ -1,0 +1,461 @@
+<!DOCTYPE html> 
+<html lang="es"> 
+<head> 
+	<title>MazeHunter</title>
+	<script type='text/javascript' src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="jquery.timer.js" type="text/javascript"></script>
+	<link href="MazeHunterStyle.css" rel="stylesheet" type="text/css" />
+</head>
+<script>
+
+var initialText = "Bienvenidos a MazeHunter";
+characterPos_x = 250;
+characterPos_y = 245;
+characterSpeed = 3;
+varTop = 2;
+varBottom = 2;
+varRight = 2;
+varLeft = 2;
+keyPressed = 0;
+characterNumber = 1;
+keyUp = 0;
+zoneNumber = 23;
+var zones;
+
+function initializeData()
+{
+	zones = {
+		"zone1" : "0,0,1,1,0",
+		"zone2" : "0,1,0,1,0",
+		"zone3" : "2,1,0,1,0",
+		"zone4" : "0,1,1,1,0",
+		"zone5" : "0,1,1,0,0",
+		"zone6" : "1,0,1,0,0",
+		"zone7" : "0,0,1,1,0",
+		"zone8" : "0,1,1,0,0",
+		"zone9" : "1,0,1,1,0",
+		"zone10" : "1,1,1,0,0",
+		"zone11" : "1,1,1,1,0",
+		"zone12" : "1,1,1,1,0",
+		"zone13" : "1,1,0,1,0",
+		"zone14" : "1,1,1,1,0",
+		"zone15" : "1,1,1,1,0",
+		"zone16" : "1,0,1,0,0",
+		"zone17" : "1,0,1,1,0",
+		"zone18" : "0,1,1,1,0",
+		"zone19" : "1,1,0,1,0",
+		"zone20" : "1,1,1,0,0",
+		"zone21" : "1,1,1,1,0",
+		"zone22" : "1,1,0,1,0",
+		"zone23" : "1,1,1,1,0",
+		"zone24" : "0,1,1,1,0",
+		"zone25" : "1,1,1,1,0",
+		"zone26" : "1,0,1,1,0",
+		"zone27" : "0,1,1,1,0",
+		"zone28" : "1,1,0,0,0",
+		"zone29" : "1,0,1,1,0",
+		"zone30" : "1,1,0,0,0",
+		"zone31" : "1,0,0,1,0",
+		"zone32" : "1,1,0,1,0",
+		"zone33" : "0,1,0,0,0",
+		"zone34" : "1,0,0,1,0",
+		"zone35" : "0,1,0,0,0",
+	}
+}
+
+function newGame()
+{
+	borderLeftTopHtml = '<div id="borderLeftTop"></div>';
+	shadowLeftTopHtml = '<div id="shadowTop"></div>';
+	borderRightTopHtml = '<div id="borderRightTop"></div>';
+	shadowLeftBottomHtml = '<div id="shadowBottom"></div>';
+	characterPlayerHtml = '<div id="playerCharacter"></div>';
+	borderLeftBottomHtml = '<div id="borderLeftBottom"></div>';
+	borderRightBottomHtml = '<div id="borderRightBottom"></div>';
+	borderLeftMiddleHtml = '<div id="borderLeftMiddle"></div>';
+	shadowLeftMiddleHtml = '<div id="shadowMiddle"></div>';
+	borderRightMiddleHtml = '<div id="borderRightMiddle"></div>';
+	borderTopMiddleHtml = '<div id="borderTopMiddle"></div>';
+
+	$('#court').html(borderLeftTopHtml+shadowLeftMiddleHtml+borderRightTopHtml+shadowLeftTopHtml+shadowLeftBottomHtml+characterPlayerHtml+borderLeftBottomHtml+borderRightBottomHtml+borderLeftMiddleHtml+borderRightMiddleHtml);
+	//randomCharacter = (1 + Math.floor(Math.random() * 2));
+	avatar = 'url("Img/Characters/Character'+characterNumber+'/b-2.png")';
+	$('#playerCharacter').css('left', characterPos_x);
+	$('#playerCharacter').css('top', characterPos_y);
+	$('#playerCharacter').css('background-image', avatar);
+
+}
+
+function getConfigZone(numberOfZone)
+{
+	var nameOfZone = 'zone'+numberOfZone;
+	var fullConfig = zones[nameOfZone];
+	var vConfig = fullConfig.split(',');
+	return vConfig;
+}
+
+function stopCharacter()
+{
+	switch(keyUp)
+	{
+		case 1:
+			nextMove = 't-'+varTop;
+			avatar = 'url("Img/Characters/Character'+characterNumber+'/'+nextMove+'.png")';
+			break;
+		case 2:
+			nextMove = 'b-'+varBottom;
+			avatar = 'url("Img/Characters/Character'+characterNumber+'/'+nextMove+'.png")';
+			break;
+		case 3:
+			nextMove = 'l-'+varLeft;
+			avatar = 'url("Img/Characters/Character'+characterNumber+'/'+nextMove+'.png")';
+			break;
+		case 4:
+			nextMove = 'r-'+varRight;
+			avatar = 'url("Img/Characters/Character'+characterNumber+'/'+nextMove+'.png")';
+			break;
+		default:
+			break;
+	}
+}
+
+function loadMap(numberOfNextZone, sideCharacter)
+{
+	var vConfigNextZone = getConfigZone(numberOfNextZone);
+
+	//Acomodar separando por bordes, sombras, y middles
+	borderLeftTopHtml = '<div id="borderLeftTop"></div>';
+	shadowLeftTopHtml = '<div id="shadowTop"></div>';
+	borderRightTopHtml = '<div id="borderRightTop"></div>';
+	shadowLeftBottomHtml = '<div id="shadowBottom"></div>';
+	characterPlayerHtml = '<div id="playerCharacter"></div>';
+	borderLeftBottomHtml = '<div id="borderLeftBottom"></div>';
+	borderRightBottomHtml = '<div id="borderRightBottom"></div>';
+	
+	if(vConfigNextZone[0] == 0)
+	{
+		borderTopMiddleHtml = '<div id="borderTopMiddle"></div>';
+	}
+	else
+	{
+		borderTopMiddleHtml = '';
+	}
+
+	if(vConfigNextZone[1] == 0)
+	{
+		borderBottomMiddleHtml = '<div id="borderTopMiddle"></div>';
+	}
+	else
+	{
+		borderBottomMiddleHtml = '';
+	}
+
+	if(vConfigNextZone[2] == 0)
+	{
+		borderLeftMiddleHtml = '<div id="borderLeftMiddle"></div>';
+		shadowLeftMiddleHtml = '<div id="shadowMiddle"></div>';
+	}
+	else
+	{
+		borderLeftMiddleHtml = '';
+		shadowLeftMiddleHtml = '';
+	}
+	
+	if(vConfigNextZone[3] == 0)
+	{
+		borderRightMiddleHtml = '<div id="borderRightMiddle"></div>';
+	}
+	else
+	{
+		borderRightMiddleHtml = '';
+	}
+
+	$('#court').html(borderLeftTopHtml+shadowLeftMiddleHtml+borderRightTopHtml+shadowLeftTopHtml+shadowLeftBottomHtml+characterPlayerHtml+borderLeftBottomHtml+borderRightBottomHtml+borderLeftMiddleHtml+borderRightMiddleHtml+borderTopMiddle+borderBottomMiddleHtml);
+	
+	var sideLetter;
+	switch(sideCharacter)
+	{
+		case 1:
+			sideLetter = 't';
+			characterPos_x = 0;
+			characterPos_y = 0;
+			break;
+		case 2:
+			sideLetter = 'b';
+			characterPos_x = 0;
+			characterPos_y = 0;
+			break;
+		case 3:
+			sideLetter = 'l';
+			characterPos_x = 0;
+			characterPos_y = 0;
+			break;
+		case 4:
+			sideLetter = 'r';
+			characterPos_x = 0;
+			characterPos_y = 0;
+			break;
+	}
+	avatar = 'url("Img/Characters/Character'+characterNumber+'/'+sideLetter+'-2.png")';
+	$('#playerCharacter').css('left', characterPos_x);
+	$('#playerCharacter').css('top', characterPos_y);
+	$('#playerCharacter').css('background-image', avatar);
+	
+}
+
+function changeMap(numberOfZone, side)
+{
+	if(numberOfZone == 15 || numberOfZone == 20 || numberOfZone == 25 || numberOfZone == 30)
+	{
+		//Ver que pasa en estas zonas, donde se da vuelta al mapa
+	}
+	else
+	{
+		switch(side)
+		{
+			case 1:
+				nextZone = numberOfZone - 5;
+				break;
+			case 2:
+				nextZone = numberOfZone + 5;
+				break;
+			case 3:
+				nextZone = numberOfZone - 1;
+				break;
+			case 4:
+				nextZone = numberOfZone + 1;
+				break;
+		}
+	}
+
+	loadMap(nextZone, side);
+
+}
+
+//Devuelve false cuando no puede seguir
+function limitMapControl(side)
+{
+	var vConfigZone = getConfigZone(zoneNumber);
+	switch(side)
+	{
+		case 1:
+			if(vConfigZone[0] == 0)
+			{
+				if((characterPos_y - characterSpeed) < 150 )
+				{
+					return false;
+				}
+			}
+			else if(vConfigZone[0] == 1)
+			{
+				if((characterPos_y - characterSpeed) < 10)
+				{
+					changeMap(zoneNumber, side);
+				}
+			}
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+	}
+	return true;
+}
+
+function moveCharacter()
+{
+	switch(keyPressed)
+	{
+		case 1:
+			if(varTop == 3)
+			{
+				varTop = 0;
+			}
+			varTop++;
+			if(limitMapControl(keyPressed))
+			{
+				characterPos_y -= characterSpeed;
+			}
+			nextMove = 't-'+varTop;
+			//avatar = 'url("Img/Characters/Character'+characterNumber+'/'+nextMove+'.png")';
+			avatar = 'url("Img/Characters/Character'+characterNumber+'/t.gif")';
+			break;
+		case 2:
+			if(varBottom == 3)
+			{
+				varBottom = 0;
+			}
+			varBottom++;
+			characterPos_y += characterSpeed;
+			nextMove = 'b-'+varBottom;
+			//avatar = 'url("Img/Characters/Character'+characterNumber+'/'+nextMove+'.png")';
+			avatar = 'url("Img/Characters/Character'+characterNumber+'/b.gif")';
+			break;
+		case 3:
+			if(varLeft == 3)
+			{
+				varLeft = 0;
+			}
+			varLeft++;
+			characterPos_x -= characterSpeed;
+			nextMove = 'l-'+varLeft;
+			avatar = 'url("Img/Characters/Character'+characterNumber+'/'+nextMove+'.png")';
+			avatar = 'url("Img/Characters/Character'+characterNumber+'/l.gif")';
+			break;
+		case 4:
+			if(varRight == 3)
+			{
+				varRight = 0;
+			}
+			varRight++;
+			characterPos_x += characterSpeed;
+			nextMove = 'r-'+varRight;
+			avatar = 'url("Img/Characters/Character'+characterNumber+'/r.gif")';
+			break;
+	}
+}
+
+$(document).ready(function()
+{
+
+	initializeData();
+	newGame();
+
+	var timer = $.timer(function(){
+
+		if(keyPressed != 0)
+		{
+			moveCharacter();
+		}
+		else
+		{
+			stopCharacter();
+		}
+
+		$('#playerCharacter').css('left', characterPos_x);
+		$('#playerCharacter').css('top', characterPos_y);
+		$('#playerCharacter').css('background-image', avatar);
+
+	}, 20, true);
+
+	/*
+	KeyPressed
+	1 - Arriba
+	2 - Abajo
+	3 - Izquierda
+	4 - Derecha
+	*/
+	$('body').keydown(function() 
+	{
+		switch(event.which) {
+			//Flecha arriba
+			case 38:
+				keyPressed = 1;
+				break;
+			//Flecha abajo
+			case 40:
+				keyPressed = 2;
+				break;
+			//Flecha izquierda
+			case 37:
+				keyPressed = 3;
+				break;
+			//Flecha derecha
+			case 39:
+				keyPressed = 4;
+				break;
+			// 32 responde a la tecla espacio que dispara
+			/*case 32:
+				if(winner == 0){
+					if(shot < 5){
+						shot++;
+						cantOfShots++;
+						prevHtml = $('#court').html();
+						positionPlayerTank = $('#playerTank').position();
+						//Agregar la aparicion del shot segun los grados
+						posTankBall = getLeftAndTop(rotation);
+						var vPosTankBall = posTankBall.split('/--/');
+						posTankBall_x = positionPlayerTank.left + parseInt(vPosTankBall[0]);
+						posTankBall_y = positionPlayerTank.top + parseInt(vPosTankBall[1]);
+						ballString = '<div id="ball'+cantOfShots+'" class="ball" style="left: '+posTankBall_x+'px;top: '+posTankBall_y+'px;"></div>';
+						$('#court').html(prevHtml + ballString);
+						vShot.push(cantOfShots);
+					}
+				}
+				break;
+			*/
+		}
+	});
+
+	$('body').keyup(function() 
+	{
+		switch(event.which) {
+			// 38 responde a la flecha para arriba
+			case 38:
+				keyUp = 1;
+				if(keyPressed == 1)
+				{
+					keyPressed = 0;	
+				}
+				break;
+			//Flecha abajo
+			case 40:
+				keyUp = 2;
+				if(keyPressed == 2)
+				{
+					keyPressed = 0;	
+				}
+				break;
+			//Flecha izquierda
+			case 37:
+				keyUp = 3;
+				if(keyPressed == 3)
+				{
+					keyPressed = 0;	
+				}
+				break;
+			//Flecha derecha
+			case 39:
+				keyUp = 4;
+				if(keyPressed == 4)
+				{
+					keyPressed = 0;	
+				}
+				break;
+			//90 responde a 'z', gira el tanque
+		}
+	});
+
+});
+</script>
+<body>
+	<!--div id="headCourt">
+		<div id="peopleDiv">
+			<b><span class="peopleServedText">Personas Atendidas</span>
+			<br />
+			<span id="peopleServedValue" class="peopleServedText"></span></b>
+		</div>
+		<div id="reset">
+			<input type="button" id="btnReset" name="reset" value="Reset"/>
+		</div>
+		<div id="levelDiv">
+			<b><span class="levelText" align="center">Nivel</span>
+			<br />
+			<span id="levelValue" class="levelText"></span></b>
+		</div>
+	</div-->
+	<div id="court">
+		<div id="borderLeftTop">
+		</div>
+		<div id="borderRightTop">
+		</div>
+		<div id="borderLeftBottom">
+		</div>
+		<div id="borderRightBottom">
+		</div>
+	</div>
+	<div id="textWinOrLose"><span></span></div>
+</body> 
+</html>

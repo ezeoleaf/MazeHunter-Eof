@@ -1,0 +1,141 @@
+#playerCharacter
+{
+	position: absolute;
+	width: 42px;
+	height: 55px;
+	/*background-image: url("Img/bartender.png");*/
+	background-size: 100% 100%;
+}
+
+#court
+{
+	position: absolute;
+	left: 0px;
+	top: 30px;
+	width: 550px;
+	height: 550px;
+	/*background: #000000;*/
+	border: solid 2px black;
+	background-image: url("Img/grass2.png");
+	background-size: 100% 100%;
+}
+
+#borderLeftTop
+{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 225px;
+	height: 225px;
+	background-size: 100% 100%;
+	background-image: url("Img/leftTopBushFull.png");
+}
+
+#borderRightTop
+{
+	position: absolute;
+	left: 325px;
+	top: 0px;
+	width: 225px;
+	height: 225px;
+	background-size: 100% 100%;
+	background-image: url("Img/rightTopBushFull.png");
+}
+
+#borderLeftBottom
+{
+	position: absolute;
+	left: 0px;
+	top: 325px;
+	width: 225px;
+	height: 225px;
+	background-size: 100% 100%;
+	background-image: url("Img/leftBottomBushFull.png");
+}
+
+#borderRightBottom
+{
+	position: absolute;
+	left: 325px;
+	top: 325px;
+	width: 225px;
+	height: 225px;
+	background-size: 100% 100%;
+	background-image: url("Img/rightBottomBushFull.png");
+}
+
+#borderLeftMiddle
+{
+	position: absolute;
+	left: 0px;
+	top: 84px;
+	width: 140px;
+	height: 260px;
+	background-size: 100% 100%;
+	background-image: url("Img/leftMiddleBushFull.png");
+}
+
+#borderRightMiddle
+{
+	position: absolute;
+	left: 429px;
+	top: 97px;
+	width: 140px;
+	height: 260px;
+	background-size: 100% 100%;
+	background-image: url("Img/rightMiddleBushFull.png");
+}
+
+#borderTopMiddle
+{
+	position: absolute;
+	left: 225px;
+	top: 0px;
+	width: 100px;
+	height: 100px;
+	background-size: 100% 100%;
+	background-image: url("Img/topMiddleBushFull.png");
+}
+
+#shadowTop
+{
+	position: absolute;
+	left: 225px;
+	top: 0px;
+	width: 30px;
+	height: 225px;
+	background-size: 100% 100%;
+	background-image: url("Img/shadow.png");
+}
+
+#shadowMiddle
+{
+	position: absolute;
+	left: 125px;
+	top: 225px;
+	width: 30px;
+	height: 225px;
+	background-size: 100% 100%;
+	background-image: url("Img/shadow.png");
+}
+
+#shadowBottom
+{
+	position: absolute;
+	left: 225px;
+	top: 325px;
+	width: 30px;
+	height: 225px;
+	background-size: 100% 100%;
+	background-image: url("Img/shadow.png");
+}
+
+#textWinOrLose
+{
+	position: absolute;
+	left: 150px;
+	top: 68px;
+	color: white;
+	font-size: 16px;
+	font-family: Helvetica;
+}
