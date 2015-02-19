@@ -21,6 +21,10 @@ characterNumber = 1;
 keyUp = 0;
 zoneNumber = 23;
 var zones, objects, characterSizes;
+var vCross = [];
+var vRandomCrossName = [];
+numberOfCross = 0;
+cantOfCross = 0;
 
 function initializeData()
 {
@@ -33,7 +37,7 @@ function initializeData()
 		//"4" : "tree3.png,80,300,65,120,1",
 		"5" : "tree4.png,480,350,110,125,1",
 		"6" : "tree5.png,400,50,110,125,1",
-		"11" : "endFlag.png,225,0,100,50,0",
+		"11" : "endFlag.png,227,0,95,40,0",
 	}
 
 	characterSizes = {
@@ -130,6 +134,8 @@ function stopCharacter()
 
 function loadMap(numberOfNextZone, sideCharacter)
 {
+	findCross = 0;
+	
 	var vConfigNextZone = getConfigZone(numberOfNextZone);
 
 	//Acomodar separando por bordes, sombras, y middles
@@ -197,13 +203,48 @@ function loadMap(numberOfNextZone, sideCharacter)
 		objectHtml = '';
 	}
 	
-	if(objectControlSide == 0)
+	//Control para las cruces
+	if(cantOfCross > 0)
 	{
-		$('#court').html(borderLeftTopHtml+shadowLeftMiddleHtml+borderRightTopHtml+shadowLeftTopHtml+shadowLeftBottomHtml+borderTopMiddleHtml+objectHtml+characterPlayerHtml+borderLeftBottomHtml+borderRightBottomHtml+borderLeftMiddleHtml+borderRightMiddleHtml+borderBottomMiddleHtml);
+		for(var i = 0; i < vCross.length; i++)
+		{
+			crossString = vCross[i];
+			vCrossString = crossString.split(',');
+			if(vCrossString[1] == numberOfNextZone)
+			{
+				findCrossString = vCross[i];
+				findCross = 1;
+				break;
+			}
+		}
+		
+		if(findCross == 1)
+		{
+			vFindCrossString = findCrossString.split(',');
+			
+			crossPos_x = parseInt(vFindCrossString[2]);
+			crossPos_y = parseInt(vFindCrossString[3]);
+			
+			crossRandomName = vFindCrossString[4];
+			
+			numberOfCross = vFindCrossString[0];
+			zoneNumberCroos = vFindCrossString[1];
+			
+			crossHtml = '<div class="crossClass" id="cross'+numberOfCross+'" ></div>';
+		}
 	}
 	else
 	{
-		$('#court').html(borderLeftTopHtml+shadowLeftMiddleHtml+borderRightTopHtml+shadowLeftTopHtml+shadowLeftBottomHtml+borderTopMiddleHtml+characterPlayerHtml+borderLeftBottomHtml+borderRightBottomHtml+borderLeftMiddleHtml+borderRightMiddleHtml+borderBottomMiddleHtml+objectHtml);
+		crossHtml = '';
+	}
+	
+	if(objectControlSide == 0)
+	{
+		$('#court').html(borderLeftTopHtml+shadowLeftMiddleHtml+borderRightTopHtml+shadowLeftTopHtml+shadowLeftBottomHtml+borderTopMiddleHtml+objectHtml+crossHtml+characterPlayerHtml+borderLeftBottomHtml+borderRightBottomHtml+borderLeftMiddleHtml+borderRightMiddleHtml+borderBottomMiddleHtml);
+	}
+	else
+	{
+		$('#court').html(borderLeftTopHtml+shadowLeftMiddleHtml+borderRightTopHtml+shadowLeftTopHtml+shadowLeftBottomHtml+borderTopMiddleHtml+crossHtml+characterPlayerHtml+borderLeftBottomHtml+borderRightBottomHtml+borderLeftMiddleHtml+borderRightMiddleHtml+borderBottomMiddleHtml+objectHtml);
 	}
 	
 	var sideLetter;
@@ -246,6 +287,13 @@ function loadMap(numberOfNextZone, sideCharacter)
 	$('#playerCharacter').css('top', characterPos_y);
 	$('#playerCharacter').css('background-image', avatar);
 	zoneNumber = numberOfNextZone;
+	
+	if(findCross == 1)
+	{
+		$('#cross'+numberOfCross).css('left', crossPos_x);
+		$('#cross'+numberOfCross).css('top', crossPos_y);
+		$('#cross'+numberOfCross).css('background-image',crossRandomName);
+	}
 }
 
 //Funcion que me devuelve el alto y ancho de un character, todavia no en uso por que por lo pronto no se necesita
@@ -546,6 +594,103 @@ function moveCharacter()
 	}
 }
 
+function addCross()
+{
+	findCross = 0;
+	crossToRemove = 0;
+	if(cantOfCross < 5)
+	{
+		if(vCross.length == 0)
+		{
+			cantOfCross++;
+			numberOfCross++;
+
+			positionPlayer = $('#playerCharacter').position();
+			crossPos_x = positionPlayer.left + 3;
+			crossPos_y = positionPlayer.top + 29;
+			
+			crossRandomName = 'url("Img/cross'+(1 + Math.floor(Math.random() * 4))+'.png")';
+			vRandomCrossName.push(crossRandomName);
+			
+			crossToAdd = numberOfCross+','+zoneNumber+','+crossPos_x+','+crossPos_y+','+crossRandomName;
+			
+			vCross.push(crossToAdd);
+		}
+		else
+		{
+			//Busco si hay una cruz ya ingresada en la zona actual
+			for(var i = 0; i < vCross.length; i++)
+			{
+				crossString = vCross[i];
+				vCrossString = crossString.split(',');
+				if(vCrossString[1] == zoneNumber)
+				{
+					findCrossString = vCross[i];
+					crossToUpdate = i;
+					findCross = 1;
+					break;
+				}
+			}
+			
+			if(findCross == 1)
+			{
+				vFindCrossString = findCrossString.split(',');
+			
+				positionPlayer = $('#playerCharacter').position();
+				vFindCrossString[2] = positionPlayer.left + 3;
+				vFindCrossString[3] = positionPlayer.top + 29;
+				
+				crossPos_x = vFindCrossString[2];
+				crossPos_y = vFindCrossString[3];
+				
+				crossRandomName = vFindCrossString[4];
+				
+				numberOfCross = vFindCrossString[0];
+				zoneNumberCroos = vFindCrossString[1];
+				
+				crossToAdd = numberOfCross+','+zoneNumberCroos+','+crossPos_x+','+crossPos_y+','+crossRandomName;
+				
+				vCross[crossToUpdate] = crossToAdd;
+			}
+			else
+			{
+				cantOfCross++;
+				numberOfCross++;
+
+				positionPlayer = $('#playerCharacter').position();
+				crossPos_x = positionPlayer.left;
+				crossPos_y = positionPlayer.top;
+				
+				do
+				{
+					crossRandomName = 'url("Img/cross'+(1 + Math.floor(Math.random() * 4))+'.png")';
+				} while($.inArray(crossRandomName, vRandomCrossName) != -1);
+				vRandomCrossName.push(crossRandomName);
+				
+				crossToAdd = numberOfCross+','+zoneNumber+','+crossPos_x+','+crossPos_y+','+crossRandomName;
+				
+				vCross.push(crossToAdd);
+			}
+		}
+	}
+	else if(cantOfCross == 5)
+	{
+		
+	}
+	
+	if(findCross == 0)
+	{
+		crossHtml = '<div class="crossClass" id="cross'+numberOfCross+'" ></div>';
+	
+		prevHtml = $('#court').html();
+		$('#court').html(crossHtml+prevHtml);
+	}
+	
+	$('#cross'+numberOfCross).css('left', crossPos_x);
+	$('#cross'+numberOfCross).css('top', crossPos_y);
+	$('#cross'+numberOfCross).css('background-image',crossRandomName);
+}
+
 $(document).ready(function()
 {
 	
@@ -595,26 +740,10 @@ $(document).ready(function()
 			case 39:
 				keyPressed = 4;
 				break;
-			// 32 responde a la tecla espacio que dispara
-			/*case 32:
-				if(winner == 0){
-					if(shot < 5){
-						shot++;
-						cantOfShots++;
-						prevHtml = $('#court').html();
-						positionPlayerTank = $('#playerTank').position();
-						//Agregar la aparicion del shot segun los grados
-						posTankBall = getLeftAndTop(rotation);
-						var vPosTankBall = posTankBall.split('/--/');
-						posTankBall_x = positionPlayerTank.left + parseInt(vPosTankBall[0]);
-						posTankBall_y = positionPlayerTank.top + parseInt(vPosTankBall[1]);
-						ballString = '<div id="ball'+cantOfShots+'" class="ball" style="left: '+posTankBall_x+'px;top: '+posTankBall_y+'px;"></div>';
-						$('#court').html(prevHtml + ballString);
-						vShot.push(cantOfShots);
-					}
-				}
+			// 32 responde a la tecla espacio que agrega una cruz
+			case 32:
+				addCross();
 				break;
-			*/
 		}
 	});
 
