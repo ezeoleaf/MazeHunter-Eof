@@ -24,6 +24,11 @@ var zones;
 
 function initializeData()
 {
+	character = {
+		"1" : "b,42,55,l,42,55,r,42,55,t,42,57",
+		"2" : "b,42,53,l,42,54,r,42,54,t,42,52",
+	}
+
 	zones = {
 		"zone1" : "0,0,1,1,0",
 		"zone2" : "0,1,0,1,0",
@@ -208,6 +213,11 @@ function loadMap(numberOfNextZone, sideCharacter)
 	$('#playerCharacter').css('top', characterPos_y);
 	$('#playerCharacter').css('background-image', avatar);
 	zoneNumber = numberOfNextZone;
+}
+
+function getWidthAndHeight(numberOfCharacter, sizeCharacter)
+{
+
 }
 
 function changeMap(numberOfZone, side)
