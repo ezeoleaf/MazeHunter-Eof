@@ -545,7 +545,8 @@ function initializeData()
 
 function showValues(category, valuexcategory)
 {
-	valuesHtml = '<div id="return" class="row" onmouseup="showValueXCategory('+category+')"> <- </div>'
+	valuesHtml = '<div id="return" class="row" onmouseup="showValueXCategory('+category+')"> <- </div>';
+	valuesHtml += '<div id="titleRow" class="title">'+valuesDictionary[valuexcategory]+'</div>';
 	var vValues = [];
 	$.each( valuesxcategoryDictionary, function(key,value)
 	{
@@ -570,6 +571,7 @@ function showValues(category, valuexcategory)
 function showValueXCategory(selectedCategory)
 {
 	valuesXCategoryHtml = '<div id="return" class="row" onmouseup="showCategories('+selectedCategory+')"> <- </div>';
+	valuesXCategoryHtml += '<div id="titleRow" class="title">'+categoryDictionary[selectedCategory]+'</div>';
 	var vValuesInCategory = [];
 	$.each( valuesxcategoryDictionary, function(key,value)
 	{
@@ -592,7 +594,7 @@ function showValueXCategory(selectedCategory)
 
 function showCategories(highlightCategorie)
 {
-	categoryHtmlToAdd = "";
+	categoryHtmlToAdd = '<div id="titleRow" class="title">Valores Normales</div>';
 	$.each( categoryDictionary, function( key, value ) {
 		categoryHtmlToAdd += '<div id="div'+key+'" class="row" onmouseup="showValueXCategory('+key+')">'+value+'</div>';
 	});
