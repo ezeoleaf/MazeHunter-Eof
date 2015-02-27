@@ -12,6 +12,9 @@ var initialText = "Bienvenidos a MazeHunter";
 characterPos_x = 250;
 characterPos_y = 245;
 characterSpeed = 3;
+enemyPos_x = 0;
+enemyPos_y = 0;
+enemySpeed = 2;
 varTop = 2;
 varBottom = 2;
 varRight = 2;
@@ -25,6 +28,7 @@ var vCross = [];
 var vRandomCrossName = [];
 numberOfCross = 0;
 cantOfCross = 0;
+enemyInMap = 0;
 
 function initializeData()
 {
@@ -294,8 +298,195 @@ function loadMap(numberOfNextZone, sideCharacter)
 		$('#cross'+numberOfCross).css('top', crossPos_y);
 		$('#cross'+numberOfCross).css('background-image',crossRandomName);
 	}
+
+	if(sideCharacter != 5)
+	{
+		controlEnemy(numberOfNextZone, sideCharacter);	
+	}
 }
 
+//Me devuelve la letra para el avatar y la posicion de inicio --Terminar y adaptar
+function getSideLetterAndPos(numberOfSide)
+{
+	switch(numberOfSide)
+	{
+		case 1:
+			sideLetter = 't';
+			characterPos_x = 250;
+			characterPos_y = 470;
+			break;
+		case 2:
+			sideLetter = 'b';
+			characterPos_x = 250;
+			characterPos_y = 15;
+			break;
+		case 3:
+			sideLetter = 'l';
+			characterPos_x = 490;
+			characterPos_y = 245;
+			break;
+		case 4:
+			sideLetter = 'r';
+			characterPos_x = 15;
+			characterPos_y = 245;
+			break;
+		case 5:
+			sideLetter = 'b';
+			break;
+	}
+	return sideLetter;
+}
+
+function controlEnemy(numberOfEnemyZone, sideEnemy)
+{
+	randomAppearEnemy = (1 + Math.floor(Math.random() * 100));
+	if(randomAppearEnemy > getPercentAppearEnemy(numberOfEnemyZone))
+	{
+		addEnemy(numberOfEnemyZone, sideEnemy);
+	}
+}
+
+function addEnemy(numberOfZoneToAddEnemy, sideEnemy)
+{
+	var vConfigZoneEnemy = getConfigZone(numberOfZoneToAddEnemy);
+	var zoneToChoose = [];
+	zoneToChoose.length = 0;
+	configSide = 0;
+	switch(sideEnemy)
+	{
+		case 1:
+			configSide = 0;
+			break;
+		case 2:
+			configSide = 2;
+			break;
+		case 3:
+			configSide = 1;
+			break;
+		case 4:
+			configSide = 3;
+			break;
+	}
+
+	for(var i = 0; i <= 3; i++)
+	{
+		if(i == configSide)
+		{
+			continue;
+		}
+		else
+		{
+			if(vConfigZoneEnemy[i] == 1)
+			{
+				zoneToChoose.push(i);
+			}
+		}
+	}
+
+	if(zoneToChoose.length > 0)
+	{
+		randomZoneEnemy = Math.floor(Math.random() * (zoneToChoose.length));
+		sideLetterE = "";
+		enemyPos_x = 0;
+		enemyPos_y = 0;
+		decodedZoneEnemy = 0;
+		
+		switch(zoneToChoose[randomZoneEnemy])
+		{
+			case 0:
+				decodedZoneEnemy = 1;
+				break;
+			case 2:
+				decodedZoneEnemy = 2;
+				break;
+			case 1:
+				decodedZoneEnemy = 3;
+				break;
+			case 3:
+				decodedZoneEnemy = 4;
+				break;
+		}
+
+		switch(decodedZoneEnemy)
+		{
+			case 1:
+				sideLetterE = 't';
+				sideMoveE = 1;
+				enemyPos_x = 250;
+				enemyPos_y = 470;
+				break;
+			case 2:
+				sideLetterE = 'b';
+				sideMoveE = 2;
+				enemyPos_x = 250;
+				enemyPos_y = 15;
+				break;
+			case 3:
+				sideLetterE = 'l';
+				sideMoveE = 3;
+				enemyPos_x = 490;
+				enemyPos_y = 245;
+				break;
+			case 4:
+				sideLetterE = 'r';
+				sideMoveE = 4;
+				enemyPos_x = 15;
+				enemyPos_y = 245;
+				break;
+			case 5:
+				sideLetterE = 'b';
+				break;
+		}
+
+		enemyHtml = '<div id="enemyCharacter"></div>';
+		prevHtml = $('#court').html();
+		wordToFind = '<div id="playerCharacter"></div>';
+		//Buscar como encontrar la posicion de una palabra en un string, o puedo hacer un split con eso.
+		//Ejemplo con split
+		vHtml = prevHtml.split(wordToFind);
+		$('#court').html(vHtml[0]+wordToFind+enemyHtml+vHtml[1]);
+		
+		avatarEnemy = 'url("Img/Characters/Enemy/'+sideLetterE+'-2.png")';
+		$('#enemyCharacter').css('background-image', avatarEnemy);
+		$('#enemyCharacter').css('left', enemyPos_x);
+		$('#enemyCharacter').css('top', enemyPos_y);
+
+	}
+	else
+	{
+		enemyInMap = 0;
+	}
+}
+
+//Esta funcion devuelve las probabilidades de que aparezca un enemigo, en caso de que la zona sea mas cercana a cero, mas probabilidades tiene de aparecer
+function getPercentAppearEnemy(numberOfZone)
+{
+	if(numberOfZone >= 1 && numberOfZone <= 5)
+	{
+		return 50;
+	}
+	if(numberOfZone >= 6 && numberOfZone <= 10)
+	{
+		return 60;
+	}
+	if(numberOfZone >= 11 && numberOfZone <= 15)
+	{
+		return 70;
+	}
+	if(numberOfZone >= 16 && numberOfZone <= 20)
+	{
+		return 80;
+	}
+	if(numberOfZone >= 21 && numberOfZone <= 25)
+	{
+		return 90;
+	}
+}
+
+function moveEnemy()
+{
+
+}
 //Funcion que me devuelve el alto y ancho de un character, todavia no en uso por que por lo pronto no se necesita
 function getWidthAndHeight(numberOfCharacter, sideCharacter)
 {
@@ -706,6 +897,11 @@ $(document).ready(function()
 		else
 		{
 			stopCharacter();
+		}
+
+		if(enemyInMap == 1)
+		{
+			moveEnemy();
 		}
 
 		$('#playerCharacter').css('left', characterPos_x);
