@@ -31,6 +31,7 @@ cantOfCross = 0;
 enemyInMap = 0;
 sideLetterE = "";
 decodedZoneEnemy = 0;
+alreadyChange = 0;
 
 function initializeData()
 {
@@ -42,7 +43,7 @@ function initializeData()
 		"3" : "tree2.png,50,300,110,125,1",
 		//"4" : "tree3.png,80,300,65,120,1",
 		"5" : "tree4.png,400,300,110,125,1",
-		"6" : "tree5.png,400,50,110,125,1",
+		"6" : "tree5.png,400,300,110,125,1",
 		"11" : "endFlag.png,227,0,95,40,0",
 	}
 
@@ -397,6 +398,7 @@ function addEnemy(numberOfZoneToAddEnemy, sideEnemy)
 
 	if(zoneToChoose.length > 0)
 	{
+		alreadyChange = 0;
 		randomZoneEnemy = Math.floor(Math.random() * (zoneToChoose.length));
 		sideLetterE = "";
 		enemyPos_x = 0;
@@ -525,34 +527,110 @@ function getPercentAppearEnemy(numberOfZone)
 //El lugar donde elige es de forma aleatoria
 function moveEnemy()
 {
+	var zoneToMove = [];
 	enemyPosition = $('#enemyCharacter').position();
 	enemyPosMove_x = enemyPosition.left;
 	enemyPosMove_y = enemyPosition.top;
-	if(enemyPosMove_x == 250 && enemyPosMove_y == 245)
+	if((enemyPosMove_x >= 250 && enemyPosMove_x <= 255) && (enemyPosMove_y >= 245 && enemyPosMove_y <= 265))
 	{
 		//Esta en la posicion central, se elige el siguiente camino, se cambia la imagen y se mueve
-	}
-	else
-	{
-		switch(decodedZoneEnemy)
+		if(alreadyChange == 0)
 		{
-			case 1:
-				enemyPosMove_y -= enemySpeed;
-				break;
-			case 2:
-				enemyPosMove_y += enemySpeed;
-				break;
-			case 3:
-				enemyPosMove_x -= enemySpeed;
-				break;
-			case 4:
-				enemyPosMove_x += enemySpeed;
-				break;
+			var vConfigZoneEnemy = getConfigZone(zoneNumber);
+			for(var i = 0; i <= 3; i++)
+			{
+				if(vConfigZoneEnemy[i] == 1)
+				{
+					zoneToMove.push(i);
+				}
+			}
+			if(zoneToMove.length > 0)
+			{
+				randomZoneEnemyMove = Math.floor(Math.random() * (zoneToMove.length));
+				sideLetterE = "";
+				
+				switch(zoneToMove[randomZoneEnemyMove])
+				{
+				case 0:
+					decodedZoneEnemy = 1;
+					break;
+				case 2:
+					decodedZoneEnemy = 2;
+					break;
+				case 1:
+					decodedZoneEnemy = 3;
+					break;
+				case 3:
+					decodedZoneEnemy = 4;
+					break;
+				}
+				
+				switch(decodedZoneEnemy)
+				//switch(zoneToMove[randomZoneEnemyMove])
+				{
+					case 1:
+						sideLetterE = 't';
+						sideMoveE = 1;
+						break;
+					case 2:
+						sideLetterE = 'b';
+						sideMoveE = 2;
+						break;
+					case 3:
+						sideLetterE = 'l';
+						sideMoveE = 3;
+						break;
+					case 4:
+						sideLetterE = 'r';
+						sideMoveE = 4;
+						break;
+					case 5:
+						sideLetterE = 'b';
+						break;
+				}
+				
+				stringSize = characterSizes["3"];
+				vStringSize = stringSize.split(',');
+				if($.inArray(sideLetterE, vStringSize) != -1)
+				{
+					widthEnemy = vStringSize[($.inArray(sideLetterE, vStringSize) + 1)];
+					heightEnemy = vStringSize[($.inArray(sideLetterE, vStringSize) + 2)];
+				}
+				else
+				{
+					widthEnemy = 45;
+					heightEnemy = 55;
+				}
+
+				avatarEnemy = 'url("Img/Characters/Enemy/'+sideLetterE+'-2.png")';
+				$('#enemyCharacter').css('width', widthEnemy);
+				$('#enemyCharacter').css('height', heightEnemy);
+				$('#enemyCharacter').css('background-image', avatarEnemy);
+				alreadyChange = 1;
+			}
 		}
 	}
-	
-	$('#enemyCharacter').css('left', enemyPosMove_x);
-	$('#enemyCharacter').css('top', enemyPosMove_y);
+	switch(decodedZoneEnemy)
+	{
+		case 1:
+			enemyPosMove_y -= enemySpeed;
+			break;
+		case 2:
+			enemyPosMove_y += enemySpeed;
+			break;
+		case 3:
+			enemyPosMove_x -= enemySpeed;
+			break;
+		case 4:
+			enemyPosMove_x += enemySpeed;
+			break;
+	}
+
+	if(limitMapEnemy(decodedZoneEnemy, enemyPosMove_x, enemyPosMove_y))
+	{
+		$('#enemyCharacter').css('left', enemyPosMove_x);
+		$('#enemyCharacter').css('top', enemyPosMove_y);
+	}
 }
 
 //Funcion que me devuelve el alto y ancho de un character, todavia no en uso por que por lo pronto no se necesita
@@ -675,6 +753,87 @@ function changeMap(numberOfZone, side)
 
 	loadMap(nextZone, side);
 
+}
+
+function limitMapEnemy(side,ePos_x, ePos_y)
+{
+	var vConfigZone = getConfigZone(zoneNumber);
+	switch(side)
+	{
+		case 1:
+			if(vConfigZone[0] == 1)
+			{
+				if((ePos_y - enemySpeed) < 5)
+				{
+					$('#enemyCharacter').hide();
+				}
+			}
+			/*
+			if((ePos_x < 225 || ePos_x >= 290))
+			{
+				if((ePos_y - enemySpeed) < 190)
+				{
+					return false;
+				}
+			}
+			*/
+			break;
+		case 2:
+			if(vConfigZone[2] == 1)
+			{
+				if((ePos_y + enemySpeed) > 500)
+				{
+					$('#enemyCharacter').hide();
+				}
+			}
+			/*
+			if((ePos_x < 225 || ePos_x >= 290))
+			{
+				if((ePos_y + enemySpeed) > 290)
+				{
+					return false;
+				}
+			}
+			*/
+			break;
+		case 3:
+			if(vConfigZone[1] == 1)
+			{
+				if((ePos_x - enemySpeed) < 5)
+				{
+					$('#enemyCharacter').hide();
+				}
+			}
+			/*
+			if((ePos_y <= 180 || ePos_y >= 295))
+			{
+				if((ePos_x - enemySpeed) < 225)
+				{
+					return false;
+				}
+			}
+			*/
+			break;
+		case 4:
+			if(vConfigZone[3] == 1)
+			{
+				if((ePos_x + enemySpeed) > 500)
+				{
+					$('#enemyCharacter').hide();
+				}
+			}
+			/*
+			if((ePos_y <= 180 || ePos_y >= 295))
+			{
+				if((ePos_x + enemySpeed) > 290)
+				{
+					return false;
+				}
+			}
+			*/
+			break;
+	}
+	return true;
 }
 
 //Devuelve false cuando no puede seguir
