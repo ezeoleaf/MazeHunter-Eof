@@ -4,7 +4,6 @@
 	<title>MazeHunter</title>
 	<script type='text/javascript' src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="jquery.timer.js" type="text/javascript"></script>
-	<script src="ion.sound.js" type="text/javascript"></script>
 	<link href="MazeHunterStyle.css" rel="stylesheet" type="text/css" />
 </head>
 <script>
@@ -35,35 +34,14 @@ decodedZoneEnemy = 0;
 
 function initializeData()
 {
-	/*
-	ion.sound({
-		sounds: [
-			{
-				name: "water_droplet"
-			},
-			{
-				name: "notify_sound",
-				volume: 0.2
-			},
-			{
-				name: "alert_sound",
-				volume: 0.3,
-				preload: false
-			}
-		],
-		volume: 0.5,
-		path: "sounds/",
-		preload: true
-	});
-	*/
 	//Objects va a tener los objetos que pueden aparecer en un mapa.
 	//Ej: (nombre,pos_x,pos_y,width, height,0 o 1); //0 representa que se tiene que poner antes que el character en el html y 1 desp del character
 	objects = {
 		"1" : "creeper1.png,80,110,65,120,0",
-		"2" : "tree1.png,400,350,110,125,1",
+		"2" : "tree1.png,400,300,110,125,1",
 		"3" : "tree2.png,50,300,110,125,1",
 		//"4" : "tree3.png,80,300,65,120,1",
-		"5" : "tree4.png,480,350,110,125,1",
+		"5" : "tree4.png,400,300,110,125,1",
 		"6" : "tree5.png,400,50,110,125,1",
 		"11" : "endFlag.png,227,0,95,40,0",
 	}
@@ -99,8 +77,8 @@ function initializeData()
 		"zone21" : "1,1,1,1,0",
 		"zone22" : "1,1,0,1,1",
 		"zone23" : "1,1,1,1,0",
-		"zone24" : "0,1,1,1,0",
-		"zone25" : "1,1,1,1,0",
+		"zone24" : "0,1,1,1,5",
+		"zone25" : "1,1,1,1,6",
 		"zone26" : "1,0,1,1,0",
 		"zone27" : "0,1,1,1,0",
 		"zone28" : "1,1,0,0,0",
@@ -118,7 +96,7 @@ function newGame()
 {
 	characterNumber = (1 + Math.floor(Math.random() * 2));
 	loadMap(zoneNumber, 5);
-	 $('#audio_fb')[0].play();
+	$('#audio_fb')[0].play();
 }
 
 function getConfigZone(numberOfZone)
