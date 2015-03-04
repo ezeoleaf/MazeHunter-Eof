@@ -7,6 +7,14 @@
 	background-size: 100% 100%;
 }
 
+#enemyCharacter
+{
+	position: absolute;
+	width: 42px;
+	height: 55px;
+	background-size: 100% 100%;
+}
+
 .object
 {
 	position: absolute;
