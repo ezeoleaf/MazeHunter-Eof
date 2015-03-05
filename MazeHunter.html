@@ -626,11 +626,56 @@ function moveEnemy()
 			break;
 	}
 
+	loseControl(decodedZoneEnemy, enemyPosMove_x, enemyPosMove_y);
+	
 	if(limitMapEnemy(decodedZoneEnemy, enemyPosMove_x, enemyPosMove_y))
 	{
 		$('#enemyCharacter').css('left', enemyPosMove_x);
 		$('#enemyCharacter').css('top', enemyPosMove_y);
 	}
+}
+
+//Controla si el enemy toca o no al player, en caso de que si, se pone la speed de los dos a cero y se muestra una pantalla de partida perdida
+function loseControl(side, ePos_x, ePos_y)
+{
+	playerPosition = $('#playerCharacter').position();
+	playerPos_x = playerPosition.left;
+	playerPos_y = playerPosition.top;
+	
+	switch(side)
+	{
+		case 1:
+			//if(((ePos_y - enemySpeed) >= playerPos_y) && (ePos_y - enemySpeed) <= playerPos_y + 50)
+			if((((ePos_y - enemySpeed) >= playerPos_y) && ((ePos_y - enemySpeed) <= playerPos_y + 30)) && (ePos_x - 10 <= playerPos_x && (ePos_x <= playerPos_x + 50)))
+			{
+				characterSpeed = 0;
+				enemySpeed = 0;
+			}
+			break;
+		case 2:
+			if((((ePos_y + enemySpeed) + 30 >= playerPos_y) && ((ePos_y + enemySpeed) + 30 <= playerPos_y + 30)) && (ePos_x - 10 <= playerPos_x && (ePos_x <= playerPos_x + 50)))
+			{
+				characterSpeed = 0;
+				enemySpeed = 0;
+			}
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+	}
+	if(characterSpeed == 0 && enemySpeed == 0)
+	{
+		loadLoseScreen();
+	}
+}
+
+function loadLoseScreen()
+{
+	$('#court').css('background-image','none');
+	$('#court').css('background-color','black');
+	$('#court').html('<div id="loseDiv"><span id="loseText">Ha perdido. Desea iniciar una nueva partida?</span><br><br><input type="button" onmouseup="location.reload();" value="Jugar"/></div>');
+	
 }
 
 //Funcion que me devuelve el alto y ancho de un character, todavia no en uso por que por lo pronto no se necesita
@@ -755,6 +800,7 @@ function changeMap(numberOfZone, side)
 
 }
 
+//Controla que si llega al limite del mapa, desaparezca
 function limitMapEnemy(side,ePos_x, ePos_y)
 {
 	var vConfigZone = getConfigZone(zoneNumber);
@@ -768,15 +814,6 @@ function limitMapEnemy(side,ePos_x, ePos_y)
 					$('#enemyCharacter').hide();
 				}
 			}
-			/*
-			if((ePos_x < 225 || ePos_x >= 290))
-			{
-				if((ePos_y - enemySpeed) < 190)
-				{
-					return false;
-				}
-			}
-			*/
 			break;
 		case 2:
 			if(vConfigZone[2] == 1)
@@ -786,15 +823,6 @@ function limitMapEnemy(side,ePos_x, ePos_y)
 					$('#enemyCharacter').hide();
 				}
 			}
-			/*
-			if((ePos_x < 225 || ePos_x >= 290))
-			{
-				if((ePos_y + enemySpeed) > 290)
-				{
-					return false;
-				}
-			}
-			*/
 			break;
 		case 3:
 			if(vConfigZone[1] == 1)
@@ -804,15 +832,6 @@ function limitMapEnemy(side,ePos_x, ePos_y)
 					$('#enemyCharacter').hide();
 				}
 			}
-			/*
-			if((ePos_y <= 180 || ePos_y >= 295))
-			{
-				if((ePos_x - enemySpeed) < 225)
-				{
-					return false;
-				}
-			}
-			*/
 			break;
 		case 4:
 			if(vConfigZone[3] == 1)
@@ -822,15 +841,6 @@ function limitMapEnemy(side,ePos_x, ePos_y)
 					$('#enemyCharacter').hide();
 				}
 			}
-			/*
-			if((ePos_y <= 180 || ePos_y >= 295))
-			{
-				if((ePos_x + enemySpeed) > 290)
-				{
-					return false;
-				}
-			}
-			*/
 			break;
 	}
 	return true;
